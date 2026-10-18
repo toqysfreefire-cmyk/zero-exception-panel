@@ -129,19 +129,15 @@
                 </div>
 
                 <div class="topbar-right">
-                    <div class="sync-status-badge local-draft" id="syncStatusBadge">
+                    <div class="sync-status-badge cloud-live" id="syncStatusBadge" title="Automated GitHub & Vercel deployment engine is active">
                         <span class="status-indicator-dot"></span>
-                        <span id="syncStatusText">Checking Sync...</span>
+                        <span id="syncStatusText">⚡ Auto-Deploy Active (15s)</span>
                     </div>
 
-                    <button class="btn-publish-netlify" id="btnDeployNetlifyTop" title="Deploy updates to Vercel for all customers">
-                        <i class="fas fa-rocket"></i> <span>Deploy to Vercel</span>
-                    </button>
-
                     <div class="admin-user-pill" id="adminUserPill">
-                        <i class="fas fa-crown" style="color: #FACC15;" id="adminRoleIcon"></i>
+                        <i class="fas fa-crown" style="color: #F59E0B;" id="adminRoleIcon"></i>
                         <span id="currentAdminEmail" style="font-weight: 700; color: var(--adm-text);">tgsgaming2024@gmail.com</span>
-                        <span class="badge-tag" id="currentAdminBadge" style="background: rgba(250, 204, 21, 0.2); color: #FACC15; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">SUPER ADMIN</span>
+                        <span class="badge-tag" id="currentAdminBadge" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">SUPER ADMIN</span>
                     </div>
 
                     <button class="btn-add-quick" id="quickAddProductBtn">
@@ -152,28 +148,6 @@
 
             <!-- Dashboard Content Container -->
             <div class="adm-content">
-
-                <!-- Smart Deployment Alert Banner -->
-                <div class="deploy-alert-banner" id="deployAlertBanner">
-                    <div class="deploy-alert-icon">
-                        <i class="fas fa-check-circle" style="color: var(--adm-accent);"></i>
-                    </div>
-                    <div class="deploy-alert-body">
-                        <h4 id="deployAlertTitle">Store Catalog Active</h4>
-                        <p id="deployAlertText">Edits in this console save immediately to your store. Click <strong>Download products.json</strong> to publish your latest products live to Vercel.</p>
-                    </div>
-                    <div class="deploy-alert-actions">
-                        <button class="btn-alert-action primary" id="btnAlertExport">
-                            <i class="fas fa-file-download"></i> Download products.json
-                        </button>
-                        <button class="btn-alert-action secondary" id="btnCopyJsonQuick" title="Copy JSON directly to clipboard">
-                            <i class="fas fa-copy"></i> Copy JSON
-                        </button>
-                        <button class="btn-alert-action secondary" id="btnCleanDuplicatesAlert" title="Clean any (Copy) test duplicates">
-                            <i class="fas fa-broom"></i> Clean Duplicates
-                        </button>
-                    </div>
-                </div>
 
                 <!-- Stats Overview Banner -->
                 <div class="adm-stats-grid">

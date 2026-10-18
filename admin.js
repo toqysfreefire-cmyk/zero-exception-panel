@@ -1502,20 +1502,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateGitHubBadge(config) {
-        if (!ghAutoDeployBadge) return;
         const currentConfig = config || getGitHubConfig();
         const token = (currentConfig.token || '').trim();
-        if (token.length > 5) {
-            if (currentConfig.autoDeploy !== false) {
-                ghAutoDeployBadge.className = 'sync-provider-badge active';
-                ghAutoDeployBadge.innerHTML = '🟢 Auto-Deploy Active (15s)';
+
+        if (ghAutoDeployBadge) {
+            if (token.length > 5) {
+                if (currentConfig.autoDeploy !== false) {
+                    ghAutoDeployBadge.className = 'sync-provider-badge active';
+                    ghAutoDeployBadge.innerHTML = '🟢 Auto-Deploy Active (15s)';
+                } else {
+                    ghAutoDeployBadge.className = 'sync-provider-badge idle';
+                    ghAutoDeployBadge.innerHTML = '🟡 Manual Deploy Mode';
+                }
             } else {
                 ghAutoDeployBadge.className = 'sync-provider-badge idle';
-                ghAutoDeployBadge.innerHTML = '🟡 Manual Deploy Mode';
+                ghAutoDeployBadge.innerHTML = '⚪ Enter Token to Enable';
             }
-        } else {
-            ghAutoDeployBadge.className = 'sync-provider-badge idle';
-            ghAutoDeployBadge.innerHTML = '⚪ Enter Token to Enable';
+        }
+
+        if (syncStatusBadge && syncStatusText) {
+            if (token.length > 5 && currentConfig.autoDeploy !== false) {
+                syncStatusBadge.className = 'sync-status-badge cloud-live';
+                syncStatusText.textContent = '⚡ Auto-Deploy Active (15s)';
+            } else {
+                syncStatusBadge.className = 'sync-status-badge local-draft';
+                syncStatusText.textContent = 'Local Store Active';
+            }
         }
     }
 
@@ -1567,7 +1579,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!token) {
             if (!options.silent) {
-                alert('⚠️ GitHub Personal Access Token is missing!\n\nPlease enter your GitHub token in the field above and click "Save GitHub Settings".\n\nSee the 30-second setup guide below the form to create your token in seconds.');
+                alert('⚠️ GitHub Personal Access Token is missing!\n\nPlease enter your GitHub token in Tab 6 and click "Save GitHub Settings".');
             }
             return false;
         }
@@ -1575,6 +1587,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (ghAutoDeployBadge) {
             ghAutoDeployBadge.className = 'sync-provider-badge syncing';
             ghAutoDeployBadge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Committing to GitHub...';
+        }
+        if (syncStatusBadge && syncStatusText) {
+            syncStatusBadge.className = 'sync-status-badge syncing';
+            syncStatusText.textContent = '⚡ Committing to Vercel...';
         }
 
         if (!options.silent) {
@@ -1617,8 +1633,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (ghAutoDeployBadge) {
                 ghAutoDeployBadge.className = 'sync-provider-badge active';
                 ghAutoDeployBadge.innerHTML = '🟢 Deployed! (~15s live)';
-                setTimeout(() => updateGitHubBadge(config), 7000);
             }
+            if (syncStatusBadge && syncStatusText) {
+                syncStatusBadge.className = 'sync-status-badge cloud-live';
+                syncStatusText.textContent = '🟢 Live on Vercel (~15s)';
+            }
+            setTimeout(() => updateGitHubBadge(config), 7000);
 
             const shortCommit = commitSha && commitSha.length >= 7 ? commitSha.substring(0, 7) : 'latest';
             showToast(`🚀 Auto-committed to GitHub (${shortCommit})! Vercel deploying live in ~15s.`, 'success');
