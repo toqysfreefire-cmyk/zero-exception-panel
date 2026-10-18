@@ -345,12 +345,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentAdminEmail) currentAdminEmail.textContent = currentSessionUser.email;
         if (adminRoleIcon) {
             adminRoleIcon.className = isSuper ? 'fas fa-crown' : 'fas fa-user-shield';
-            adminRoleIcon.style.color = isSuper ? '#FACC15' : '#00fcca';
+            adminRoleIcon.style.color = isSuper ? '#F59E0B' : '#38BDF8';
         }
         if (currentAdminBadge) {
             currentAdminBadge.textContent = isSuper ? 'SUPER ADMIN' : (currentSessionUser.role || 'SUB-ADMIN').toUpperCase();
-            currentAdminBadge.style.background = isSuper ? 'rgba(250, 204, 21, 0.2)' : 'rgba(0, 252, 202, 0.2)';
-            currentAdminBadge.style.color = isSuper ? '#FACC15' : '#00fcca';
+            currentAdminBadge.style.background = isSuper ? 'rgba(245, 158, 11, 0.2)' : 'rgba(56, 189, 248, 0.15)';
+            currentAdminBadge.style.color = isSuper ? '#FCD34D' : '#38BDF8';
         }
 
         // Manage Admins Navigation button is strictly visible to Main Server Admin
@@ -2205,7 +2205,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (perms.payments_manage) permTags.push('<span class="badge-tag" style="background: rgba(16, 185, 129, 0.15); color: #6EE7B7;"><i class="fas fa-wallet"></i> Payments</span>');
             if (perms.notices_manage) permTags.push('<span class="badge-tag" style="background: rgba(245, 158, 11, 0.15); color: #FCD34D;"><i class="fas fa-bullhorn"></i> Notices</span>');
             if (perms.currencies_manage) permTags.push('<span class="badge-tag" style="background: rgba(124, 58, 237, 0.15); color: #C4B5FD;"><i class="fas fa-coins"></i> Currencies</span>');
-            if (perms.sync_manage) permTags.push('<span class="badge-tag" style="background: rgba(0, 252, 202, 0.15); color: #00fcca;"><i class="fas fa-sync"></i> Cloud Sync</span>');
+            if (perms.sync_manage) permTags.push('<span class="badge-tag" style="background: rgba(245, 158, 11, 0.15); color: #FCD34D;"><i class="fas fa-sync"></i> Cloud Sync</span>');
             if (perms.backup_manage) permTags.push('<span class="badge-tag" style="background: rgba(244, 63, 94, 0.15); color: #FDA4AF;"><i class="fas fa-database"></i> Backup</span>');
 
             card.innerHTML = `
