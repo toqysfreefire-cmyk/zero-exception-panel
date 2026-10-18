@@ -633,6 +633,61 @@
                         </div>
 
                         <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- CARD 0: 100% AUTOMATED GITHUB & VERCEL AUTO-DEPLOY -->
+                            <div class="sync-provider-card" style="border: 2px solid var(--adm-accent); background: rgba(0, 252, 202, 0.03);">
+                                <div class="sync-card-header">
+                                    <div style="display: flex; align-items: center; gap: 14px;">
+                                        <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(0, 252, 202, 0.15); color: var(--adm-accent); display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                            <i class="fab fa-github"></i>
+                                        </div>
+                                        <div>
+                                            <h4 style="font-size: 16px; color: var(--adm-accent);">⚡ 100% Automated GitHub & Vercel Sync</h4>
+                                            <p style="font-size: 12px; color: var(--adm-text-secondary);">Save product updates directly to your GitHub repository with zero manual downloads. Vercel auto-deploys within 15 seconds!</p>
+                                        </div>
+                                    </div>
+                                    <span class="sync-provider-badge idle" id="ghAutoDeployBadge">⚪ Enter Token to Enable</span>
+                                </div>
+
+                                <div class="form-row" style="margin-top: 14px;">
+                                    <div class="form-group" style="flex: 2;">
+                                        <label style="font-size: 12px; font-weight: 700;">GitHub Repository</label>
+                                        <input type="text" id="ghRepoName" value="toqysfreefire-cmyk/zero-exception-panel" placeholder="owner/repo">
+                                    </div>
+                                    <div class="form-group" style="flex: 1;">
+                                        <label style="font-size: 12px; font-weight: 700;">Branch</label>
+                                        <input type="text" id="ghBranchName" value="main" placeholder="main">
+                                    </div>
+                                    <div class="form-group" style="flex: 2;">
+                                        <label style="font-size: 12px; font-weight: 700;">GitHub Personal Access Token</label>
+                                        <input type="password" id="ghPersonalToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--adm-border);">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--adm-text);">
+                                        <input type="checkbox" id="ghAutoDeployOnSave" checked style="width: auto;">
+                                        🚀 Automatically Commit to GitHub on Every Save / Edit / Delete
+                                    </label>
+
+                                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                        <button class="btn-primary-save" id="btnSaveGitHubConfig" style="padding: 9px 18px; font-size: 12.5px;">
+                                            <i class="fas fa-save"></i> Save GitHub Settings
+                                        </button>
+                                        <button class="btn-secondary-cancel" id="btnTriggerGitHubDeployNow" style="padding: 9px 18px; font-size: 12.5px;">
+                                            <i class="fas fa-cloud-upload-alt"></i> Push Catalog to GitHub Now
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--adm-border); border-radius: 8px; padding: 12px; margin-top: 14px; font-size: 12px; color: var(--adm-text-secondary); line-height: 1.6;">
+                                    <strong style="color: var(--adm-text);">🔑 30-Second Setup to Enable 0-Click Auto Deploy:</strong><br>
+                                    1. Go to <a href="https://github.com/settings/tokens/new" target="_blank" style="color: var(--adm-accent); text-decoration: underline;">github.com/settings/tokens/new</a> (log into your GitHub account).<br>
+                                    2. Set Note: <code>Zero Admin Auto Deploy</code>, Expiration: <code>No expiration</code>, and check the <strong><code>repo</code></strong> box (Full control of private repositories).<br>
+                                    3. Click <strong>Generate token</strong> at the bottom, copy the token (starts with <code>ghp_...</code>), paste it above, and click <strong>Save GitHub Settings</strong>.<br>
+                                    🎉 Done! Any product or price change you save will now automatically push to GitHub and auto-deploy to Vercel in 15 seconds without any manual work!
+                                </div>
+                            </div>
+
                             <!-- CARD 1: 1-CLICK CATALOG DOWNLOAD & CLIPBOARD -->
                             <div class="sync-provider-card" style="border-color: var(--adm-accent);">
                                 <div class="sync-card-header">

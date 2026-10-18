@@ -210,6 +210,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCleanDuplicatesSyncTab = document.getElementById('btnCleanDuplicatesSyncTab');
     const btnResetToDefaults = document.getElementById('btnResetToDefaults');
 
+    // GitHub Auto-Deploy Engine Elements
+    const ghRepoName = document.getElementById('ghRepoName');
+    const ghBranchName = document.getElementById('ghBranchName');
+    const ghPersonalToken = document.getElementById('ghPersonalToken');
+    const ghAutoDeployOnSave = document.getElementById('ghAutoDeployOnSave');
+    const btnSaveGitHubConfig = document.getElementById('btnSaveGitHubConfig');
+    const btnTriggerGitHubDeployNow = document.getElementById('btnTriggerGitHubDeployNow');
+    const ghAutoDeployBadge = document.getElementById('ghAutoDeployBadge');
+
     // Tab 7: Backup
     const btnExportFullBackup = document.getElementById('btnExportFullBackup');
     const backupFileInput = document.getElementById('backupFileInput');
@@ -581,6 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadSettings();
         await loadProducts();
         initAdminsArray();
+        loadGitHubConfig();
         renderPresetImages();
         renderCategoryChips();
         renderCatalogCards();
@@ -661,6 +671,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 timestamp: Date.now()
             });
             updateStats();
+
+            // 100% Automated GitHub & Vercel deployment
+            const ghConfig = getGitHubConfig();
+            if (ghConfig.token && ghConfig.autoDeploy !== false) {
+                pushToGitHub({ silent: true });
+            }
         } catch(e) {
             console.error('Error saving products:', e);
         }
@@ -1455,6 +1471,219 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    // ============================================================
+    // 100% AUTOMATED GITHUB & VERCEL AUTO-DEPLOY ENGINE
+    // ============================================================
+
+    function getGitHubConfig() {
+        let config = {
+            repo: 'toqysfreefire-cmyk/zero-exception-panel',
+            branch: 'main',
+            token: '',
+            autoDeploy: true
+        };
+        try {
+            const raw = localStorage.getItem('zero_github_config');
+            if (raw) {
+                config = { ...config, ...JSON.parse(raw) };
+            }
+        } catch(e) {}
+        return config;
+    }
+
+    function loadGitHubConfig() {
+        const config = getGitHubConfig();
+        if (ghRepoName) ghRepoName.value = config.repo || 'toqysfreefire-cmyk/zero-exception-panel';
+        if (ghBranchName) ghBranchName.value = config.branch || 'main';
+        if (ghPersonalToken) ghPersonalToken.value = config.token || '';
+        if (ghAutoDeployOnSave) ghAutoDeployOnSave.checked = config.autoDeploy !== false;
+        updateGitHubBadge(config);
+    }
+
+    function updateGitHubBadge(config) {
+        if (!ghAutoDeployBadge) return;
+        const currentConfig = config || getGitHubConfig();
+        const token = (currentConfig.token || '').trim();
+        if (token.length > 5) {
+            if (currentConfig.autoDeploy !== false) {
+                ghAutoDeployBadge.className = 'sync-provider-badge active';
+                ghAutoDeployBadge.innerHTML = '🟢 Auto-Deploy Active (15s)';
+            } else {
+                ghAutoDeployBadge.className = 'sync-provider-badge idle';
+                ghAutoDeployBadge.innerHTML = '🟡 Manual Deploy Mode';
+            }
+        } else {
+            ghAutoDeployBadge.className = 'sync-provider-badge idle';
+            ghAutoDeployBadge.innerHTML = '⚪ Enter Token to Enable';
+        }
+    }
+
+    function saveGitHubConfigFromInputs() {
+        const repo = ghRepoName ? ghRepoName.value.trim() : 'toqysfreefire-cmyk/zero-exception-panel';
+        const branch = ghBranchName ? ghBranchName.value.trim() : 'main';
+        const token = ghPersonalToken ? ghPersonalToken.value.trim() : '';
+        const autoDeploy = ghAutoDeployOnSave ? ghAutoDeployOnSave.checked : true;
+
+        const config = { repo, branch, token, autoDeploy };
+        localStorage.setItem('zero_github_config', JSON.stringify(config));
+        updateGitHubBadge(config);
+
+        if (token.length > 5) {
+            showToast('GitHub Auto-Deploy configuration saved! Auto-sync is active.', 'success');
+        } else {
+            showToast('GitHub settings saved. (Token is empty - Auto-Deploy idle)', 'info');
+        }
+    }
+
+    if (btnSaveGitHubConfig) {
+        btnSaveGitHubConfig.addEventListener('click', saveGitHubConfigFromInputs);
+    }
+
+    if (btnTriggerGitHubDeployNow) {
+        btnTriggerGitHubDeployNow.addEventListener('click', () => {
+            pushToGitHub({ silent: false });
+        });
+    }
+
+    function utf8ToBase64(str) {
+        try {
+            return window.btoa(unescape(encodeURIComponent(str)));
+        } catch(e) {
+            const bytes = new TextEncoder().encode(str);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+    }
+
+    async function pushToGitHub(options = {}) {
+        const config = getGitHubConfig();
+        const token = (config.token || '').trim();
+        const repo = (config.repo || 'toqysfreefire-cmyk/zero-exception-panel').trim();
+        const branch = (config.branch || 'main').trim();
+
+        if (!token) {
+            if (!options.silent) {
+                alert('⚠️ GitHub Personal Access Token is missing!\n\nPlease enter your GitHub token in the field above and click "Save GitHub Settings".\n\nSee the 30-second setup guide below the form to create your token in seconds.');
+            }
+            return false;
+        }
+
+        if (ghAutoDeployBadge) {
+            ghAutoDeployBadge.className = 'sync-provider-badge syncing';
+            ghAutoDeployBadge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Committing to GitHub...';
+        }
+
+        if (!options.silent) {
+            showToast('Connecting to GitHub API...', 'info');
+        }
+
+        try {
+            let commitSha = null;
+            let success = false;
+
+            // 1. Try Vercel Serverless Function /api/save-products
+            try {
+                const apiRes = await fetch('/api/save-products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        products,
+                        settings,
+                        token,
+                        repo,
+                        branch
+                    })
+                });
+
+                if (apiRes.ok) {
+                    const data = await apiRes.json();
+                    commitSha = data.results?.products?.commit || 'serverless';
+                    success = true;
+                }
+            } catch(e) {
+                // Endpoint not available (e.g. running on local file system or static preview)
+            }
+
+            // 2. Direct GitHub REST API fallback (works 100% anywhere in browser)
+            if (!success) {
+                commitSha = await directGitHubCommit(repo, branch, token, 'products.json', JSON.stringify(products, null, 4));
+                success = true;
+            }
+
+            if (ghAutoDeployBadge) {
+                ghAutoDeployBadge.className = 'sync-provider-badge active';
+                ghAutoDeployBadge.innerHTML = '🟢 Deployed! (~15s live)';
+                setTimeout(() => updateGitHubBadge(config), 7000);
+            }
+
+            const shortCommit = commitSha && commitSha.length >= 7 ? commitSha.substring(0, 7) : 'latest';
+            showToast(`🚀 Auto-committed to GitHub (${shortCommit})! Vercel deploying live in ~15s.`, 'success');
+            return true;
+        } catch(err) {
+            console.error('Push to GitHub error:', err);
+            if (ghAutoDeployBadge) {
+                ghAutoDeployBadge.className = 'sync-provider-badge error';
+                ghAutoDeployBadge.innerHTML = '❌ Commit Error';
+                setTimeout(() => updateGitHubBadge(config), 6000);
+            }
+
+            if (!options.silent) {
+                alert('❌ GitHub Auto-Deploy Error:\n\n' + err.message + '\n\nPlease ensure your GitHub token has the "repo" scope checked and your repository name is correct.');
+            } else {
+                showToast('GitHub Auto-Deploy failed: ' + err.message, 'error');
+            }
+            return false;
+        }
+    }
+
+    async function directGitHubCommit(repo, branch, token, path, contentStr) {
+        const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}?ref=${branch}`;
+
+        // Get current SHA
+        let currentSha = null;
+        try {
+            const getRes = await fetch(apiUrl, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github+json',
+                    'User-Agent': 'Zero-Exception-Admin'
+                }
+            });
+            if (getRes.ok) {
+                const data = await getRes.json();
+                currentSha = data.sha;
+            }
+        } catch(e) {}
+
+        const base64Content = utf8ToBase64(contentStr);
+
+        const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/vnd.github+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `Auto-update ${path} via ZERO Admin Console [deploy]`,
+                content: base64Content,
+                sha: currentSha || undefined,
+                branch: branch
+            })
+        });
+
+        if (!putRes.ok) {
+            const errData = await putRes.json().catch(() => ({}));
+            throw new Error(errData.message || `GitHub HTTP ${putRes.status}`);
+        }
+
+        const putResult = await putRes.json();
+        return putResult.commit?.sha || 'ok';
+    }
 
     // Import products.json File
     if (btnTriggerImportProducts && importProductsFileInput) {
