@@ -1,5 +1,25 @@
 [
     {
+        "id": "prod-1793513613432",
+        "title": "CDA CDI",
+        "category": "non-root",
+        "categoryName": "Free Fire NON ROOT",
+        "basePrice": 1500,
+        "oldPrice": 1450,
+        "discount": "",
+        "status": "online",
+        "statusText": "Online",
+        "description": "",
+        "image": "/images/logo.jpg",
+        "packages": [
+            {
+                "name": "FREE FIRE 71 LEVEL ID",
+                "price": 50
+            }
+        ],
+        "isCustom": true
+    },
+    {
         "id": "drip-non-root",
         "title": "DRIP CLIENT NON ROOT",
         "category": "non-root",
