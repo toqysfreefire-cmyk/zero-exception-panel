@@ -4,8 +4,8 @@
         "title": "CDA CDI",
         "category": "non-root",
         "categoryName": "Free Fire NON ROOT",
-        "basePrice": 1500,
-        "oldPrice": 1450,
+        "basePrice": 150,
+        "oldPrice": null,
         "discount": "",
         "status": "online",
         "statusText": "Online",
@@ -14,7 +14,7 @@
         "packages": [
             {
                 "name": "FREE FIRE 71 LEVEL ID",
-                "price": 50
+                "price": 100000
             }
         ],
         "isCustom": true
