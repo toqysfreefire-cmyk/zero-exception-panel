@@ -1,29 +1,5 @@
 [
     {
-        "id": "prod-1793524852056",
-        "title": "sdadssasgfdsgdsfagfdsgsdfgfdssfgd",
-        "category": "non-root",
-        "categoryName": "Free Fire NON ROOT",
-        "basePrice": 54,
-        "oldPrice": 110,
-        "discount": "51% OFF",
-        "status": "online",
-        "statusText": "gfdsgfdsdfdfsasdf",
-        "description": "dfssdfdfssdfgdfsgfsd",
-        "image": "/images/logo.jpg",
-        "packages": [
-            {
-                "name": "7 Days",
-                "price": 200
-            },
-            {
-                "name": "7 Days",
-                "price": 200
-            }
-        ],
-        "isCustom": true
-    },
-    {
         "id": "drip-non-root",
         "title": "DRIP CLIENT NON ROOT",
         "category": "non-root",
