@@ -1,5 +1,37 @@
 [
     {
+        "id": "prod-1793610718786",
+        "title": "DRIP CLIENT NON ROOT",
+        "category": "tcp",
+        "categoryName": "Tcp",
+        "basePrice": 52,
+        "oldPrice": 111,
+        "discount": "53% OFF",
+        "status": "online",
+        "statusText": "Online",
+        "description": "",
+        "image": "/images/logo.jpg",
+        "packages": [
+            {
+                "name": "1 Day",
+                "price": 50
+            },
+            {
+                "name": "3 Days",
+                "price": 130
+            },
+            {
+                "name": "7 Days",
+                "price": 250
+            },
+            {
+                "name": "30 Days",
+                "price": 750
+            }
+        ],
+        "isCustom": true
+    },
+    {
         "id": "drip-non-root",
         "title": "DRIP CLIENT NON ROOT",
         "category": "non-root",
